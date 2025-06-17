@@ -1,0 +1,41 @@
+cmake_minimum_required(VERSION 3.25)
+project(Heif-D-Code)
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
+if(CMAKE_BINARY_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  message(FATAL_ERROR "In-source build is unsupported")
+endif()
+
+# Setup the 3rdParty folder
+execute_process( WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/3rdParty" COMMAND 
+  "${CMAKE_COMMAND}" -P Setup.cmake COMMAND_ERROR_IS_FATAL ANY)
+  
+set(commonFlags "-fno-rtti -fno-exceptions --no-entry -sSTANDALONE_WASM -sSTRICT")
+set(debugCompileFlags "${commonFlags} -fsanitize=address -fsanitize=undefined -O0")
+set(releaseCompileFlags "${commonFlags} -O3")
+set(debugLinkFlags ${debugCompileFlags})
+set(releaseLinkFlags ${releaseCompileFlags})
+
+get_cmake_property(multiConfigGenerator GENERATOR_IS_MULTI_CONFIG)
+if(multiConfigGenerator)
+  message("Multi-config generator detected")
+  add_compile_options("$<$<CONFIG:Debug>:${debugCompileFlags}>"
+    "$<$<CONFIG:Release>:${releaseCompileFlags}>")
+  add_link_options("$<$<CONFIG:Debug>:${debugLinkFlags}>"
+    "$<$<CONFIG:Release>:${releaseLinkFlags}>")
+else()
+  message("Single-config generator detected")
+  if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
+  endif()
+  if(CMAKE_BUILD_TYPE STREQUAL Debug)
+    add_compile_options(${debugCompileFlags})
+    add_link_options(${debugLinkFlags})
+  elseif(CMAKE_BUILD_TYPE STREQUAL Release)
+    add_compile_options(${releaseCompileFlags})
+    add_link_options(${releaseLinkFlags})
+  else()
+    message(FATAL_ERROR "Unknown build type, only Debug/Release are allowed")
+  endif()
+endif()
+set(BUILD_SHARED_LIBS OFF)
+add_subdirectory(src)
