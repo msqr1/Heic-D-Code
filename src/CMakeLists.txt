@@ -14,6 +14,8 @@ set(WITH_EXAMPLES OFF)
 set(LIBDE265_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/libde265/include")
 set(LIBDE265_LIBRARY "${CMAKE_SOURCE_DIR}/libde265/lib/libde265.a")
 add_subdirectory("${CMAKE_SOURCE_DIR}/libheif" "${CMAKE_BINARY_DIR}/libheif")
+target_include_directories(decoder PRIVATE "${CMAKE_SOURCE_DIR}/libheif/libheif/api")
+target_include_directories(decoder PRIVATE "${CMAKE_BINARY_DIR}/libheif")
 target_link_libraries(decoder PRIVATE heif)
 
 add_custom_command(POST_BUILD TARGET decoder
