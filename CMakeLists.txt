@@ -1,19 +1,17 @@
 cmake_minimum_required(VERSION 3.25)
-project(Heif-D-Code)
+project(Heif-D-Code CXX)
+
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 if(CMAKE_BINARY_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   message(FATAL_ERROR "In-source build is unsupported")
 endif()
-
-# Setup the 3rdParty folder
-execute_process( WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/3rdParty" COMMAND 
-  "${CMAKE_COMMAND}" -P Setup.cmake COMMAND_ERROR_IS_FATAL ANY)
   
-set(commonFlags "-fno-rtti -fno-exceptions --no-entry -sSTANDALONE_WASM -sSTRICT")
-set(debugCompileFlags "${commonFlags} -fsanitize=address -fsanitize=undefined -O0")
-set(releaseCompileFlags "${commonFlags} -O3")
-set(debugLinkFlags ${debugCompileFlags})
-set(releaseLinkFlags ${releaseCompileFlags})
+set(commonCompileFlags "-fno-exceptions;-Wno-everything;--no-entry")
+set(commonLinkFlags "-sSTANDALONE_WASM;-sMALLOC=emmalloc")
+set(debugCompileFlags "${commonCompileFlags};-fsanitize=address;-fsanitize=undefined;-O0;-sASSERTIONS=2;-sSTACK_OVERFLOW_CHECK=2")
+set(releaseCompileFlags "${commonCompileFlags};-O3;-flto")
+set(debugLinkFlags "${debugCompileFlags};${commonLinkFlags}")
+set(releaseLinkFlags "${releaseCompileFlags};${commonLinkFlags}")
 
 get_cmake_property(multiConfigGenerator GENERATOR_IS_MULTI_CONFIG)
 if(multiConfigGenerator)
@@ -38,4 +36,6 @@ else()
   endif()
 endif()
 set(BUILD_SHARED_LIBS OFF)
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_subdirectory(src)

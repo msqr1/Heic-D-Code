@@ -1,13 +1,5 @@
-.vscode
+libde265
+libheif
 .cache
 .clangd
-.vs
-3rdParty/*
-!3rdParty/Setup.cmake
-test*
-!test
 build
-out
-act
-CMakePresets.json
-Kaldi

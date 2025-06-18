@@ -1,0 +1,68 @@
+diff --git a/libheif/pixelimage.cc b/libheif/pixelimage.cc
+index 04e81fe..5e95b23 100644
+--- a/libheif/pixelimage.cc
++++ b/libheif/pixelimage.cc
+@@ -262,43 +262,43 @@ Error HeifPixelImage::ImagePlane::alloc(uint32_t width, uint32_t height, heif_ch
+ 
+   assert(alignment>=1);
+ 
++  size_t allocation_size = static_cast<size_t>(m_mem_height) * stride + alignment - 1;
++
+   if (limits &&
+       limits->max_memory_block_size &&
+       (limits->max_memory_block_size < alignment - 1U ||
+        (limits->max_memory_block_size - (alignment - 1U)) / stride < m_mem_height)) {
+     std::stringstream sstr;
+-    sstr << "Allocating " << static_cast<size_t>(m_mem_height) * stride + alignment - 1 << " bytes exceeds the security limit of "
++    sstr << "Allocating " << allocation_size << " bytes exceeds the security limit of "
+          << limits->max_memory_block_size << " bytes";
+ 
+     return {heif_error_Memory_allocation_error,
+             heif_suberror_Security_limit_exceeded,
+             sstr.str()};
+   }
+-
+-  try {
+-    allocated_mem = new uint8_t[static_cast<size_t>(m_mem_height) * stride + alignment - 1];
+-    uint8_t* mem_8 = allocated_mem;
+-
+-    // shift beginning of image data to aligned memory position
+-
+-    auto mem_start_addr = (uint64_t) mem_8;
+-    auto mem_start_offset = (mem_start_addr & (alignment - 1U));
+-    if (mem_start_offset != 0) {
+-      mem_8 += alignment - mem_start_offset;
+-    }
+-
+-    mem = mem_8;
+-
+-    return Error::Ok;
+-  }
+-  catch (const std::bad_alloc& excpt) {
++  allocated_mem = new (std::nothrow) uint8_t[allocation_size];
++  if (allocated_mem == nullptr) {
+     std::stringstream sstr;
+-    sstr << "Allocating " << static_cast<size_t>(m_mem_height) * stride + alignment - 1 << " bytes failed";
++    sstr << "Allocating " << allocation_size << " bytes failed";
+ 
+     return {heif_error_Memory_allocation_error,
+             heif_suberror_Unspecified,
+             sstr.str()};
+   }
++
++  uint8_t* mem_8 = allocated_mem;
++
++  // shift beginning of image data to aligned memory position
++
++  auto mem_start_addr = (uint64_t) mem_8;
++  auto mem_start_offset = (mem_start_addr & (alignment - 1U));
++  if (mem_start_offset != 0) {
++    mem_8 += alignment - mem_start_offset;
++  }
++
++  mem = mem_8;
++
++  return Error::Ok;
+ }
+ 
+ 

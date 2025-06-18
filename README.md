@@ -1,6 +1,8 @@
 # Heic-D-Code
 A wasm build of libheif whose only purpose is to decode `.heif` image or the first image of a `.heic` to make it super small so you can render those on browsers.
 And yes, the name is inspired by One Piece.
+Input: An `ArrayBuffer` that contains HEIC image data
+Output: An `ImageData` object
 
 
 # Building instruction (from scratch)
