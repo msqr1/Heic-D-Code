@@ -1,0 +1,26 @@
+{
+  "name": "heic-d-code",
+  "version": "0.0.1",
+  "description": "A wasm build of libheif whose only purpose is to decode `.heif` image or the first image of a `.heic` for use in a browser.",
+  "keywords": [
+    "libheif",
+    "wasm",
+    "heic"
+  ],
+  "homepage": "https://github.com/msqr1/Heic-D-Code#readme",
+  "bugs": {
+    "url": "https://github.com/msqr1/Heic-D-Code/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msqr1/Heic-D-Code.git"
+  },
+  "license": "MIT",
+  "author": "msqr1",
+  "type": "module",
+  "main": "Heic-D-Code.js",
+  "types": "./Heic-D-Code.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

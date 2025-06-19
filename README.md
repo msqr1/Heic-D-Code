@@ -1,7 +1,5 @@
 # Heic-D-Code
-- A wasm build of libheif whose only purpose is to decode `.heif` image or the first image of a `.heic` to make it super small so you can render those on browsers. Its size is half of other libraries like `heic2any` or `heic-to`.
-- Input: An `Uint8Array` containing HEIC image data.
-- Output: An `ImageData`-like object, with the exact same fields, minus `settings`, so that it's transferrable because `ImageData` isn't transferrable.
+- A wasm build of libheif whose only purpose is to decode `.heif` image or the first image of a `.heic` for use in a browser. Its size is half of other libraries like `heic2any` or `heic-to`.
 - Used in [SnapFridge](https://github.com/msqr1/SnapFridge)
 - Version: libde265 1.0.16, libheif 1.19.8
 

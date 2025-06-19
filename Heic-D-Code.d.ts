@@ -1,7 +1,9 @@
+
+// An ImageData-like object because ImageData isn't transferrable
 export type DecodeOutput = {
   data: Uint8ClampedArray;
-  width: Number;
-  height: Number;
+  width: number;
+  height: number;
 };
 
 export type Module = {
