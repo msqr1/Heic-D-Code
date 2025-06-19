@@ -3,6 +3,7 @@
 - Input: An `Uint8Array` containing HEIC image data.
 - Output: An `ImageData`-like object, with the exact same fields, minus `settings`, so that it's transferrable because `ImageData` isn't transferrable.
 - Used in [SnapFridge](https://github.com/msqr1/SnapFridge)
+- Version: libde265 1.0.16, libheif 1.19.8
 
 # Building instruction (from scratch)
 ```bash
