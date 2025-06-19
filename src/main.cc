@@ -1,22 +1,24 @@
 #include <cstddef>
 #include <string>
-#include <emscripten/emscripten.h>
 #include <libheif/heif.h>
-#include <emscripten/console.h>
 #include <emscripten/bind.h>
 
 struct DecodeOutput {
   int width;
   int height;
   int err;
-  const uint8_t* data;
 
+  // Raw pointers aren't allowed with Embind's value_object, but when pointers go to JS
+  // they becomes int (in WASM32) anyways, so...
+  int start;
+
+  DecodeOutput() = default;
   DecodeOutput(heif_error_code err): err{err} {}
   DecodeOutput(int width, int height, const uint8_t* data):
     width{width},
     height{height},
-    data{data},
-    err{heif_error_code::heif_error_Ok}
+    err{heif_error_code::heif_error_Ok},
+    start{reinterpret_cast<int>(data)} // ...we just turn it to one in C++!
   {}
 };
 
@@ -27,7 +29,11 @@ struct UsrData {
 
 heif_context* const ctx{heif_context_alloc()};
 
-DecodeOutput decode(int start, int size) {
+
+// To maximize efficiency, we are gonna directly use the buffer created in JS pass in and
+// return a buffer created in C++, no extra copying. The JS side need to copy that buffer
+// in JS somewhere else and then call _freeUsrData to free those memory.
+DecodeOutput decode(int start, int size) noexcept {
   heif_error err;
   uint8_t* inData{reinterpret_cast<uint8_t*>(start)};
   err = heif_context_read_from_memory_without_copy(ctx, inData, size, nullptr);
@@ -40,6 +46,7 @@ DecodeOutput decode(int start, int size) {
   if(err.code != heif_error_code::heif_error_Ok) return err.code;
 
   heif_image* out{};
+
   err = heif_decode_image(in, &out, heif_colorspace::heif_colorspace_RGB, heif_chroma::heif_chroma_interleaved_RGBA,
     nullptr);
   if(err.code != heif_error_code::heif_error_Ok) return err.code;
@@ -55,30 +62,18 @@ DecodeOutput decode(int start, int size) {
   };
 }
 
-void freeUsrData() {
+extern "C" void freeUsrData() noexcept {
   free(usrData.inData);
-  free(usrData.outImg);
+  heif_image_release(usrData.outImg);
 }
 
 using namespace emscripten;
-EMSCRIPTEN_BINDINGS() {
-  emscripten::enum_<heif_error_code>("ErrorCode")
-    .value("Input_does_not_exist", heif_error_Input_does_not_exist)
-    .value("Invalid_input", heif_error_Invalid_input)
-    .value("Plugin_loading_error", heif_error_Plugin_loading_error)
-    .value("Unsupported_filetype", heif_error_Unsupported_filetype)
-    .value("Unsupported_feature", heif_error_Unsupported_feature)
-    .value("Usage_error", heif_error_Usage_error)
-    .value("Memory_allocation_error", heif_error_Memory_allocation_error)
-    .value("Decoder_plugin_error", heif_error_Decoder_plugin_error)
-    .value("Encoder_plugin_error", heif_error_Encoder_plugin_error)
-    .value("Encoding_error", heif_error_Encoding_error)
-    .value("Color_profile_does_not_exist", heif_error_Color_profile_does_not_exist)
-    .value("Canceled", heif_error_Canceled);
-    
+EMSCRIPTEN_BINDINGS(a) {
   value_array<DecodeOutput>("DecodeOutput")
     .element(&DecodeOutput::width)
     .element(&DecodeOutput::height)
-    .element(&DecodeOutput::err);
-  function("decode", &decode);
+    .element(&DecodeOutput::err)
+    .element(&DecodeOutput::start);
+
+  function("_decode", &decode);
 }
