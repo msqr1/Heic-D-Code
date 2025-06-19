@@ -7,11 +7,11 @@ if(CMAKE_BINARY_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 endif()
   
 set(commonCompileFlags "-fno-exceptions;-Wno-everything;-sSUPPORT_LONGJMP=0;--no-entry")
-set(commonLinkFlags "-sSTANDALONE_WASM;-sMALLOC=emmalloc;-sSUPPORT_LONGJMP=0")
+set(commonLinkFlags "-sMALLOC=emmalloc;-sSUPPORT_LONGJMP=0;-sDEFAULT_TO_CXX=0;-sENVIRONMENT=web,worker;-sEXPORTED_FUNCTIONS=_malloc;-sEVAL_CTORS=2;-sEXPORT_ES6;-sMODULARIZE;-sWASMFS;-sFILESYSTEM=0;-sEXPORTED_RUNTIME_METHODS=HEAPU8;-sALLOW_MEMORY_GROWTH;-lembind")
 set(debugCompileFlags "${commonCompileFlags};-fsanitize=address;-fsanitize=undefined;-O0")
 set(releaseCompileFlags "${commonCompileFlags};-Oz;-flto;")
 set(debugLinkFlags "${debugCompileFlags};${commonLinkFlags};-sASSERTIONS=2;-sSTACK_OVERFLOW_CHECK=2")
-set(releaseLinkFlags "${releaseCompileFlags};${commonLinkFlags};-flto")
+set(releaseLinkFlags "${releaseCompileFlags};${commonLinkFlags}")
 
 get_cmake_property(multiConfigGenerator GENERATOR_IS_MULTI_CONFIG)
 if(multiConfigGenerator)

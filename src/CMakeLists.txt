@@ -1,5 +1,5 @@
 add_executable(decoder main.cc)
-set(CMAKE_EXECUTABLE_SUFFIX ".wasm")
+set(CMAKE_EXECUTABLE_SUFFIX ".js")
 
 add_compile_definitions(__EMSCRIPTEN_STANDALONE_WASM__)
 set(WITH_X265 OFF)
@@ -17,7 +17,3 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/libheif" "${CMAKE_BINARY_DIR}/libheif")
 target_include_directories(decoder PRIVATE "${CMAKE_SOURCE_DIR}/libheif/libheif/api")
 target_include_directories(decoder PRIVATE "${CMAKE_BINARY_DIR}/libheif")
 target_link_libraries(decoder PRIVATE heif)
-
-add_custom_command(POST_BUILD TARGET decoder
-  COMMAND "${CMAKE_COMMAND}" -E copy "$<TARGET_FILE:decoder>"
-  "${CMAKE_BINARY_DIR}/$<TARGET_FILE_NAME:decoder>")

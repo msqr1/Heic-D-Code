@@ -31,5 +31,5 @@ endif()
 # 1.19.8
 if(NOT EXISTS libheif)
   gitClone(strukturag/libheif 5e9deb19fe6b3768af0bb8e9e5e8438b15171bf3 libheif)
-  execute_process(WORKING_DIRECTORY "libheif" COMMAND git apply ../liheif.patch)
+  execute_process(WORKING_DIRECTORY "libheif" COMMAND git apply ../libheif.patch)
 endif()
