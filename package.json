@@ -18,6 +18,11 @@
   "license": "MIT",
   "author": "msqr1",
   "type": "module",
+  "files": [
+    "Heic-D-Code.js",
+    "Heic-D-Code.d.ts",
+    "Heic-D-Code.wasm"
+  ],
   "main": "Heic-D-Code.js",
   "types": "./Heic-D-Code.d.ts",
   "scripts": {

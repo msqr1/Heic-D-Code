@@ -14,23 +14,21 @@ set(commonCompileFlags "-fno-exceptions;
   -mextended-const;
   -msimd128;
   -sSUPPORT_LONGJMP=0;
-  -sSTRICT;
-  --no-entry;")
+  -sSTRICT;")
 set(commonLinkFlags "-sMALLOC=emmalloc;
   -sENVIRONMENT=web,worker;
-  -sEXPORTED_FUNCTIONS=_malloc,_freeUsrData;
+  -sEXPORTED_FUNCTIONS=_malloc,_freeUsrData,_main;
   -sEXPORT_ES6;
   -sMODULARIZE;
   -sALLOW_MEMORY_GROWTH;
   -sPOLYFILL=0;
-  -sINVOKE_RUN=0;
   -sEXIT_RUNTIME=0;
   -lembind;
   -sERROR_ON_UNDEFINED_SYMBOLS=0;
   -sDYNAMIC_EXECUTION=0;
   -sEMBIND_AOT;
   -sEXPORT_KEEPALIVE=0;
-  --pre-js;${CMAKE_SOURCE_DIR}/src/main.js")
+  --pre-js;${CMAKE_SOURCE_DIR}/src/main.js;")
 set(debugCompileFlags "${commonCompileFlags};
   -fsanitize=address;
   -fsanitize=undefined;
@@ -38,6 +36,7 @@ set(debugCompileFlags "${commonCompileFlags};
 set(debugLinkFlags "${debugCompileFlags};${commonLinkFlags};
   -sASSERTIONS=2;
   -sSTACK_OVERFLOW_CHECK=2;
+  -sINITIAL_MEMORY=405995520;
   -sWASMFS")
 set(releaseCompileFlags "${commonCompileFlags};
   -Oz;
@@ -45,7 +44,10 @@ set(releaseCompileFlags "${commonCompileFlags};
 set(releaseLinkFlags "${releaseCompileFlags};${commonLinkFlags};
   -sEVAL_CTORS=2;
   -sFILESYSTEM=0;
+  -sINITIAL_MEMORY=2293760;
   --closure;1")
+
+# The Release mode initial memory is just over the memory for the app itself plus 2mb for a photo.
 
 get_cmake_property(multiConfigGenerator GENERATOR_IS_MULTI_CONFIG)
 if(multiConfigGenerator)

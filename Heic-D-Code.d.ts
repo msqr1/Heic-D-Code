@@ -10,4 +10,4 @@ export type Module = {
   decode(inData: Uint8Array): DecodeOutput;
 };
 
-export default function MainModuleFactory(options?: unknown): Promise<Module>;
+export default function ModuleFactory(options?: unknown): Promise<Module>;
