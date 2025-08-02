@@ -1,7 +1,7 @@
 
 // An ImageData-like object because ImageData isn't transferrable
 export type DecodeOutput = {
-  data: Uint8ClampedArray;
+  data: ImageDataArray;
   width: number;
   height: number;
 };
