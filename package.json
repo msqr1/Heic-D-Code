@@ -1,6 +1,6 @@
 {
   "name": "heic-d-code",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A wasm build of libheif whose only purpose is to decode `.heif` image or the first image of a `.heic` for use in a browser.",
   "keywords": [
     "libheif",
