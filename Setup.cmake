@@ -14,11 +14,11 @@ function(gitClone repo hash outDir)
    --recursive --depth 1)
 endfunction(gitClone repo hash outDir)
 
-# 4.0.10
+# 4.0.12
 if(NOT EXISTS emsdk)
-  gitClone(emscripten-core/emsdk 62a853cd3b3134398ce85cde8bb5cbb2ef0194cb emsdk)
-  execute_process(WORKING_DIRECTORY "emsdk" COMMAND ./emsdk install 4.0.10 COMMAND_ERROR_IS_FATAL ANY)
-  execute_process(WORKING_DIRECTORY "emsdk" COMMAND ./emsdk activate 4.0.10 COMMAND_ERROR_IS_FATAL ANY)
+  gitClone(emscripten-core/emsdk f39e849effe1bd679aa9ef3cd1798d327c9619db emsdk)
+  execute_process(WORKING_DIRECTORY "emsdk" COMMAND ./emsdk install 4.0.12 COMMAND_ERROR_IS_FATAL ANY)
+  execute_process(WORKING_DIRECTORY "emsdk" COMMAND ./emsdk activate 4.0.12 COMMAND_ERROR_IS_FATAL ANY)
 endif()
 
 # 1.0.16

@@ -1,9 +1,13 @@
 # Heic-D-Code
+
 - A wasm build of libheif whose only purpose is to decode `.heif` image or the first image of a `.heic` for use in a browser. Its size is half of other libraries like `heic2any` or `heic-to`.
 - Used in [SnapFridge](https://github.com/msqr1/SnapFridge)
-- Version: libde265 1.0.16, libheif 1.19.8
+- Version: libde265 1.0.16, libheif 1.20.1, emscripten 4.0.12
 
 # Building instruction (from scratch)
+
+Try to use Ninja
+
 ```bash
 git clone --depth 1 https://github.com/msqr1/Heic-D-Code &&
 cd Heic-D-Code &&
@@ -16,6 +20,7 @@ cmake --build . --config Release -j$(nproc)
 ```
 
 # Usage
+
 ```mjs
 import initDecoder from "./Heic-D-Code.js";
 
@@ -26,12 +31,11 @@ const context = canvas.getContext("2d");
 try {
   const heic = await fetch("example.heic");
   const inData = await heic.bytes();
-  const { data, width, height } = decoder.decode(inData);
+  const decodeOutput = decoder.decode(inData);
   canvas.width = width;
   canvas.height = height;
-  ctx.putImageData(new ImageData(data, width, height), 0, 0);
-}
-catch(e) {
+  ctx.putImageData(new ImageData(...decodeOutput), 0, 0);
+} catch (e) {
   console.log(e);
 }
 ```

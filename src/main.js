@@ -11,11 +11,11 @@ Module = {
         throw `libheif error code ${err}`;
       }
       const outData = HEAPU8.subarray(outStart, outStart + width * height * 4);
-      return {
-        data: new Uint8ClampedArray(outData),
-        width: width,
-        height: height,
-      }
+      return [
+        new Uint8ClampedArray(outData),
+        width,
+        height,
+      ]
     }
     finally {
       _freeUsrData();

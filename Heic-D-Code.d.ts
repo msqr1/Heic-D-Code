@@ -1,10 +1,10 @@
 
 // An ImageData-like object because ImageData isn't transferrable
-export type DecodeOutput = {
-  data: ImageDataArray;
-  width: number;
-  height: number;
-};
+export type DecodeOutput = [
+  ImageDataArray,
+  number,
+  number,
+];
 
 export type Module = {
   decode(inData: Uint8Array): DecodeOutput;
